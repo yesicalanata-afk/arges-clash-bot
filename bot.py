@@ -7,8 +7,8 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 # LEER VARIABLES DE RAILWAY
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-CLASH_KEY = os.getenv("CLASH_API_KEY")
+TOKEN = "TU_TOKEN_DE_TELEGRAM_AQUÍ"
+CLASH_KEY = "TU_CLASH_API_KEY_AQUÍ"
 
 if not TOKEN or not CLASH_KEY:
     raise ValueError("ERROR: Falta TELEGRAM_TOKEN o CLASH_API_KEY en las variables de Railway.")
