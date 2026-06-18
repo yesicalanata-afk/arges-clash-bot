@@ -33,60 +33,35 @@ async def buscar_clan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Escribí el TAG del clan.")
         return
-    tag_limpio = limpiar_tag(context.args[0])
-    url = f"https://api.clashofclans.com/v1/clans/{tag_limpio}"
+    tag = limpiar_tag(context.args[0])
+    url = f"https://api.clashofclans.com/v1/clans/%23{tag}"
+    headers = {"Authorization": f"Bearer {CLASH_KEY}"}
     try:
-        # Usamos tu clave tal como la tienes definida
-        headers = {"Authorization": f"Bearer {CLASH_KEY}"}
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            msg = f"⚔️ Clan: {data.get('name')}\n🛡️ Nivel: {data.get('clanLevel')}"
-            await update.message.reply_text(msg)
+            await update.message.reply_text(f"⚔️ Clan: {data.get('name')}")
         else:
-            await update.message.reply_text(f"⚠️ Error {response.status_code}: Asegura que la IP 0.0.0.0 esté en tu clave oficial.")
+            await update.message.reply_text(f"Error {response.status_code}")
     except Exception as e:
-        await update.message.reply_text(f"🚨 Error: {str(e)}")
+        await update.message.reply_text(f"Error: {e}")
 
 async def buscar_miembro(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
         await update.message.reply_text("❌ Escribí el TAG del jugador.")
         return
-    tag_limpio = limpiar_tag(context.args[0])
-    url = f"https://api.clashofclans.com/v1/players/{tag_limpio}"
+    tag = limpiar_tag(context.args[0])
+    url = f"https://api.clashofclans.com/v1/players/%23{tag}"
+    headers = {"Authorization": f"Bearer {CLASH_KEY}"}
     try:
-        headers = {"Authorization": f"Bearer {CLASH_KEY}"}
         response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            msg = f"👤 Jugador: {data.get('name')}\n🏆 Copas: {data.get('trophies')}"
-            await update.message.reply_text(msg)
+            await update.message.reply_text(f"👤 Jugador: {data.get('name')}")
         else:
-            await update.message.reply_text(f"⚠️ Error {response.status_code}: Revisa tu clave en developer.clashofclans.com")
-    async def buscar_miembro(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not context.args:
-        await update.message.reply_text("❌ Por favor, escribí el TAG del jugador.")
-        return
-
-    tag_limpio = limpiar_tag(context.args[0])
-    url = f"https://api.clashofclans.com/v1/players/{tag_limpio}"
-
-    try:
-        headers = {"Authorization": f"Bearer {CLASH_KEY}"}
-        response = requests.get(url, headers=headers, timeout=10)
-        
-        if response.status_code == 200:
-            data = response.json()
-            msg = f"👤 *JUGADOR:* {data.get('name')}\n🏆 *Copas:* {data.get('trophies')}"
-            await update.message.reply_text(msg, parse_mode='Markdown')
-        else:
-            await update.message.reply_text(f"⚠️ Error {response.status_code}: No se encontró el jugador.")
+            await update.message.reply_text(f"Error {response.status_code}")
     except Exception as e:
-        await update.message.reply_text(f"🚨 Error de conexión: {str(e)}")
-
-    tag_limpio = limpiar_tag(context.args[0])
-    url = f"https://api.clashofclans.com/v1/players/{tag_limpio}"
-
+        await update.message.reply_text(f"Error: {e}")
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
