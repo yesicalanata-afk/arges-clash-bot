@@ -23,11 +23,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = (
         "⚔️ *¡Bot de Arges Clash Activo!* ⚔️\n\n"
         "Puedo buscar info del juego en tiempo real. Usá estos comandos:\n"
-        "👉 `/clan [TAG]` \- Ver datos de un clan\n"
-        "👉 `/miembro [TAG]` \- Ver datos de un jugador\n\n"
+        "👉 `/clan [TAG]` - Ver datos de un clan\n"
+        "👉 `/miembro [TAG]` - Ver datos de un jugador\n\n"
         "_Ejemplo: /clan #2G2Y8V9R8_"
     )
-    await update.message.reply_text(msg, parse_mode='MarkdownV2')
+    await update.message.reply_text(msg, parse_mode='Markdown')
 
 async def buscar_clan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
