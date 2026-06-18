@@ -31,76 +31,58 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def buscar_clan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
-        await update.message.reply_text("❌ Por favor, escribí el TAG del clan. Ejemplo: `/clan #2G2Y8V9R8`", parse_mode='Markdown')
+        await update.message.reply_text("❌ Escribí el TAG del clan.")
         return
-
-    tag_ingresado = context.args[0]
-    tag_limpio = limpiar_tag(tag_ingresado)
-    
-    # Usamos el proxy cocapi para evitar bloqueos de IP de Railway
-    url = f"https://api.clashking.xyz/v1/clans/{tag_limpio}"
-    headers = {}
-
+    tag_limpio = limpiar_tag(context.args[0])
+    url = f"https://api.clashofclans.com/v1/clans/{tag_limpio}"
     try:
-        response = requests.get(url, headers=headers)
+        headers = {"Authorization": f"Bearer {CLASH_KEY}"}
+        response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            # Armar el mensaje con la info
-            mensaje = (
-                f"🏰 *CLAN: {data.get('name')}*\n"
-                f"🔰 *Nivel:* {data.get('clanLevel')}\n"
-                f"👥 *Miembros:* {data.get('members')}/50\n"
-                f"🏆 *Puntos de Clan:* {data.get('clanPoints')}\n"
-                f"⚔️ *Guerras Ganadas:* {data.get('warWins')}\n"
-                f"📍 *Tipo:* {data.get('type')}\n"
-            )
-            await update.message.reply_text(mensaje, parse_mode='Markdown')
-        elif response.status_code == 404:
-            await update.message.reply_text("❌ No encontré ningún clan con ese TAG. Revisalo bien.")
+            msg = f"⚔️ Clan: {data.get('name')}\n🛡️ Nivel: {data.get('clanLevel')}"
+            await update.message.reply_text(msg)
         else:
-            await update.message.reply_text(f"⚠️ Error de conexión con Clash (Código {response.status_code}).")
+            await update.message.reply_text(f"⚠️ Error {response.status_code}: Verificá tu CLASH_KEY en developer.clashofclans.com")
     except Exception as e:
-        await update.message.reply_text(f"💥 Ocurrió un error al buscar: {str(e)}")
+        await update.message.reply_text(f"🚨 Error: {str(e)}")
 
 async def buscar_miembro(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
-        await update.message.reply_text("❌ Por favor, escribí el TAG del jugador. Ejemplo: `/miembro #9P2U8Q`", parse_mode='Markdown')
+        await update.message.reply_text("❌ Escribí el TAG del jugador.")
         return
-
-    tag_ingresado = context.args[0]
-    tag_limpio = limpiar_tag(tag_ingresado)
-    
-    url = f"https://api.clashking.xyz/v1/players/{tag_limpio}"
-    headers = {}
-
+    tag_limpio = limpiar_tag(context.args[0])
+    url = f"https://api.clashofclans.com/v1/players/{tag_limpio}"
     try:
-        response = requests.get(url, headers=headers)
+        headers = {"Authorization": f"Bearer {CLASH_KEY}"}
+        response = requests.get(url, headers=headers, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            mensaje = (
-                f"👤 *JUGADOR: {data.get('name')}*\n"
-                f"🏛 *Ayuntamiento (TH):* {data.get('townHallLevel')}\n"
-                f"🏆 *Copas Actuales:* {data.get('trophies')}\n"
-                f"🥇 *Récord de Copas:* {data.get('bestTrophies')}\n"
-                f"⭐ *Estrellas de Guerra:* {data.get('warStars')}\n"
-                f"🔮 *Donaciones dadas:* {data.get('donations')}\n"
-            )
-            await update.message.reply_text(mensaje, parse_mode='Markdown')
-        elif response.status_code == 404:
-            await update.message.reply_text("❌ No encontré ningún jugador con ese TAG.")
+            msg = f"👤 Jugador: {data.get('name')}\n🏆 Copas: {data.get('trophies')}"
+            await update.message.reply_text(msg)
         else:
-            await update.message.reply_text(f"⚠️ Error al conectar con Clash (Código {response.status_code}).")
+            await update.message.reply_text(f"⚠️ Error {response.status_code}")
     except Exception as e:
-        await update.message.reply_text(f"💥 Ocurrió un error al buscar: {str(e)}")
+        await update.message.reply_text(f"🚨 Error: {str(e)}")
+    async def buscar_miembro(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not context.args:
+        await update.message.reply_text("❌ Por favor, escribí el TAG del jugador.")
+        return
 
-def main():
-    application = Application.builder().token(TOKEN).build()
-    
-    # Manejadores de comandos
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("ayuda", start)) # Hacemos que /ayuda muestre lo mismo
-    application.add_handler(CommandHandler("clan", buscar_clan))
-    application.add_handler(CommandHandler("miembro", buscar_miembro))
+    tag_limpio = limpiar_tag(context.args[0])
+    url = f"https://api.clashofclans.com/v1/players/{tag_limpio}"
+
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            msg = f"👤 *JUGADOR:* {data.get('name')}\n🏆 *Copas:* {data.get('trophies')}"
+            await update.message.reply_text(msg, parse_mode='Markdown')
+        else:
+            await update.message.reply_text(f"⚠️ Error {response.status_code}: No se encontró el jugador.")
+    except Exception as e:
+        await update.message.reply_text(f"🚨 Error de conexión: {str(e)}")
+        
     
     print("Bot con comandos de Clash iniciado...")
     application.run_polling()
