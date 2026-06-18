@@ -39,7 +39,7 @@ async def buscar_clan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     # Usamos el proxy cocapi para evitar bloqueos de IP de Railway
     url = f"https://api.clashking.xyz/v1/clans/{tag_limpio}"
-    headers = {"Authorization": f"Bearer {CLASH_KEY}"}
+    headers = {}
 
     try:
         response = requests.get(url, headers=headers)
@@ -71,7 +71,7 @@ async def buscar_miembro(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tag_limpio = limpiar_tag(tag_ingresado)
     
     url = f"https://api.clashking.xyz/v1/players/{tag_limpio}"
-    headers = {"Authorization": f"Bearer {CLASH_KEY}"}
+    headers = {}
 
     try:
         response = requests.get(url, headers=headers)
